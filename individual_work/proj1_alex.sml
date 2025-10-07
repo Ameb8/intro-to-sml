@@ -60,3 +60,19 @@ fun isPrime(n) =
             false
     else
         isPrimeHelper(n, 2)
+
+
+(*
+    Write a function select of this type: ‘a list * (‘a -> bool) -> ‘a list 
+    that takes a list and a function f as a parameter. Your function should 
+    apply f to each element of the list and should return a new list 
+    containing only those elements of the original list for which f returned 
+    true. The elements of the new list can be given in any order. For example, 
+    evaluating select ([1,2,3,4,5,6,7,8,9,10], is Prime) should result in a 
+    list like [7,5,3,2].
+*)
+
+fun select(lst: 'a list, filter: 'a -> bool) =
+    
+
+
