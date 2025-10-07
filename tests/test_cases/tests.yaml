@@ -1,11 +1,11 @@
-- functions:
-  - name: min3
-    returns: int
-    cases:
-      - args: (1, 2, 3)
-        expected: 1
-      - args: (3, 2, 1)
-        expected: 1
-      - args: (10, 8, min3(3, 1, 2))
-        expected: 1
+- name: min3
+  return: int
+  cases:
+    - args: (1, 2, 3)
+      expected: 1
+    - args: (3, 2, 1)
+      expected: 1
+    - args: (10, 8, min3(3, 1, 2))
+      expected: 1
+
       
