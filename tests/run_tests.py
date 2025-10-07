@@ -4,6 +4,7 @@ from typing import Any
 import tempfile
 import subprocess
 import shutil
+import re
 import pytest
 
 
@@ -14,7 +15,7 @@ TEST_FILE_NAME: str = "test.sml"
 def target_file(request):
     target_name = request.config.getoption("--target")
     repo_root = Path(__file__).parent.parent.resolve()
-    return repo_root / "src" / "individual_work" / target_name
+    return repo_root / "individual_work" / target_name
 
 
 @pytest.fixture(scope="session")
@@ -68,17 +69,33 @@ def generate_test_cases() -> list[tuple[str, str, str]]:
 
 
 def write_test_file(test_file: Path, name: str, args: str, target_file: Path) -> None:
-    func_call = f"use {str(target_file)};\n{name}{args};"
+    func_call = f"use \"{str(target_file)}\";\n{name}{args};\nOS.Process.exit(OS.Process.success);"
     test_file.write_text(func_call, encoding='utf-8')
 
 @pytest.mark.parametrize("func, args, expected", generate_test_cases())
-def run_test(func: str, args: str, expected: str, test_file: Path, target_file: Path):
+def test_run(func: str, args: str, expected: str, test_file: Path, target_file: Path):
     print("\nTest Running!")
     write_test_file(test_file, func, args, target_file)
+
+    # DEBUG *******
+    print(f"\nContents of test_file ({test_file}):")
+    print(test_file.read_text())
+    # END DEBUG ***
+
     result = subprocess.run(
         ["sml", str(test_file)],
         capture_output=True,
         text=True
     )
 
-    assert result.stdout.strip() == expected.strip()
+    print(f"\n\nSML OUTPUT:\n{result.stdout}")
+        # Extract all `val it = ...` results
+    it_matches = re.findall(r"val it = (.+?) : .+", result.stdout)
+    
+    if not it_matches:
+        pytest.fail("No 'val it = ...' found in SML output.")
+    
+    last_output = it_matches[-1].strip()
+    print(f"\nExtracted result: {last_output}, Expected: {expected}")
+
+    assert last_output == str(expected)
