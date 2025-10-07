@@ -2,3 +2,14 @@
 .idea/
 .DS_Store
 Thumbs.db
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.cache/
+.coverage
+coverage.xml
+htmlcov/
+venv/
+.venv/
+env/
+ENV/
