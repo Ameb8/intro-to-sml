@@ -41,19 +41,30 @@ def load_tests() -> list[dict[str, any]]:
     '''
     # Get path to yaml file
     current_dir = Path(__file__).parent
-    yaml_path = current_dir / '..' / 'test_cases' / 'tests.yaml'
+    yaml_path = current_dir / 'test_cases' / 'tests.yaml'
     yaml_path = yaml_path.resolve()
 
     # Load yaml file
     with open(yaml_path, 'r') as file:
-        return yaml.safe_load(file) # Return data as list
+        data = yaml.safe_load(file)
+        print(f"\nYAML DATA:\n\n{data}\n") # DEBUG ***
+        return data
+        #return yaml.safe_load(file) # Return data as list
     
 
 def generate_test_cases() -> list[tuple[str, str, str]]:
     '''
     Generate list of tuples for all test cases in tests.yaml
     '''
-    return [case for func in load_tests() for case in create_test_params(func)]
+
+    # DEBUG *******
+    raw_data = load_tests()
+    print(f"Raw YAML data: {raw_data}")  # DEBUG ***
+    # END DEBUG ***
+    
+    lst = [case for func in load_tests() for case in create_test_params(func)]
+    print(f"List: {lst}")
+    return lst
 
 
 def write_test_file(test_file: Path, name: str, args: str, target_file: Path) -> None:
@@ -62,6 +73,7 @@ def write_test_file(test_file: Path, name: str, args: str, target_file: Path) ->
 
 @pytest.mark.parametrize("func, args, expected", generate_test_cases())
 def run_test(func: str, args: str, expected: str, test_file: Path, target_file: Path):
+    print("\nTest Running!")
     write_test_file(test_file, func, args, target_file)
     result = subprocess.run(
         ["sml", str(test_file)],
@@ -70,8 +82,3 @@ def run_test(func: str, args: str, expected: str, test_file: Path, target_file: 
     )
 
     assert result.stdout.strip() == expected.strip()
-
-
-def pytest_addoption(parser):
-    parser.addoption("--target", action="store", help="Target SML file name")
-
