@@ -73,6 +73,27 @@ fun isPrime(n) =
 *)
 
 fun select(lst: 'a list, filter: 'a -> bool) =
-    
+    lst
 
 
+(*
+    Write a function band of type bool list -> bool that takes a list of Boolean 
+    values and returns the logical OR of all of them. If the list is empty, your 
+    function should return true
+*)
+
+fun logicalOr [] = false
+  | logicalOr (x::xs) =
+        if x = true then x
+        else logicalOr(xs)
+
+
+(*
+    Write a function dupList of type ‘a list -> ‘a list whose output list is the 
+    same as the input list, but with each element of the input list repeated twice 
+    in a row. For example, if the input list is [1,3,2], the output list should be 
+    [1,1,3,3,2,2]. If the input list is [], the output list should be [].
+*)
+
+fun dupList (x::[]) = [x, x]
+  | dupList (x::xs) = [x, x] @ dupList(xs)
