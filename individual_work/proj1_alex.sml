@@ -95,5 +95,21 @@ fun logicalOr [] = false
     [1,1,3,3,2,2]. If the input list is [], the output list should be [].
 *)
 
-fun dupList (x::[]) = [x, x]
+fun dupList [] = []
   | dupList (x::xs) = [x, x] @ dupList(xs)
+
+
+(*
+    Write a function max of type int list -> int that returns the largest element 
+    of a list of integers. Your function need not to behave well if the list is empty.
+*)
+
+fun maxInt [] = 0
+  | maxInt (x::xs) = []
+
+
+(*
+Write a function convert of type (‘a * ‘b) list -> ‘a list * ‘b list, that converts a
+list of pairs into a pair of lists, preserving the order of the elements. For example, convert [(1,2),
+(3,4), (5,6)] should evaluate to ([1,3,5], [2,4,6]).
+*)
