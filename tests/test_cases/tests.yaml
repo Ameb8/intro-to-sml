@@ -33,3 +33,12 @@
       expected: "false"
     - args: (100)
       expected: "false"
+- name: logicalOr
+  return: bool
+  cases:
+    - args: "([false, false, true])"
+      expected: "true"
+    - args: "([false, false])"
+      expected: "false"
+    - args: "([])"
+      expected: "false"
