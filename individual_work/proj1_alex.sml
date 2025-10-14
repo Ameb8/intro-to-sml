@@ -44,13 +44,11 @@ fun cycle (list, n) =
 *)
 
 fun isPrimeHelper(n, divisor) =
-    if divisor * divisor > n then
+    if divisor * divisor > n then (* n is prime *)
         true
-    else
-        if n mod divisor = 0 then
-            false
-        else
-            isPrimeHelper(n, divisor + 1)
+    else 
+        if n mod divisor = 0 then false (* Divisor found, not prime *)
+        else isPrimeHelper(n, divisor + 1) (* Continue search for divisor *)
 
 fun isPrime(n) =
     if n < 3 then
@@ -104,12 +102,42 @@ fun dupList [] = []
     of a list of integers. Your function need not to behave well if the list is empty.
 *)
 
-fun maxInt [] = 0
-  | maxInt (x::xs) = []
+fun maxPair(x, y) =
+    if x > y then x else y
+
+fun maxInt (x::[]) = x
+  | maxInt (x::xs) = maxPair(x, maxInt(xs))
 
 
 (*
-Write a function convert of type (‘a * ‘b) list -> ‘a list * ‘b list, that converts a
-list of pairs into a pair of lists, preserving the order of the elements. For example, convert [(1,2),
-(3,4), (5,6)] should evaluate to ([1,3,5], [2,4,6]).
+    Write a function convert of type (‘a * ‘b) list -> ‘a list * ‘b list, that converts 
+    a list of pairs into a pair of lists, preserving the order of the elements. For 
+    example, convert [(1,2), (3,4), (5,6)] should evaluate to ([1,3,5], [2,4,6]).
 *)
+
+fun transposePair [] = ([], [])
+  | transposePair ((x,y)::xs) =
+      let 
+        val (lst1,lst2) = transposePair(xs)
+      in
+        (x::lst1, y::lst2)
+      end;
+
+
+(*
+    A binary search tree is a binary tree with special properties. It may be Empty. It may be a Node
+    containing a left subtree, a data item x, and a right subtree. 1n this case all the data items in the tree are
+    different, all the items in the left subtree are smaller than x, all the items in the right subtree are greater
+    than x, and the left and right subtrees arc also binary search trees. Write a function makeBST of type
+    'a list → ('a * 'a → bool) → 'a tree
+    that organizes the items in the list into a binary search tree. The tree need not be balanced. You may
+    assume that no item in the tree is repeated
+*)
+(*
+datatype tree = 
+    Empty
+  | Node of 'a * tree * tree
+*)
+
+
+

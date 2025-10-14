@@ -60,7 +60,7 @@
       expected: 5
     - args: "([~3, ~10, ~1, ~2])"
       expected: ~1
--name: pairList
+- name: pairList
   return: list
   cases:
     - args: "([(1, 2), (3, 4), (5, 6)])"
