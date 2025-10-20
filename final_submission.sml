@@ -6,18 +6,11 @@
     the smallest of the three integers.
 *)
 
-fun min3 (x, y, z) =
-    if x < y then
-        if x < z then 
-            x
-        else
-            z
+fun min3 (a, b, c) =
+    if a <= b then
+        if a <= c then a else c
     else
-        if y < z then
-            y
-        else
-            z
-
+        if b <= c then b else c;
 (*
     Question 2
 
@@ -28,11 +21,14 @@ fun min3 (x, y, z) =
     should return the list [3,4,5,6,1,2].
 *)
 
-fun cycle (list, n) =
-    if n = 0 then (* Base case, cycling complete *)
-        list
-    else (* Recursively move 1st element to back of list *)
-        cycle (tl list @ [hd list], n - 1)
+fun cycle (list: 'a list, n: int) : 'a list =
+  if n = 0 then list
+  else cycle (tl list@[hd list], n - 1);
+
+fun cycle2 ([], _) = []
+  | cycle2 (x::xs, n) =
+      if n < 1 then x::xs
+      else cycle2 (tl list@[hd list], n - 1);
 
 
 (*  
@@ -43,22 +39,17 @@ fun cycle (list, n) =
     Your function need not behave well if the parameter is negative.
 *)
 
-fun isPrimeHelper(n, divisor) =
-    if divisor * divisor > n then (* n is prime *)
-        true
-    else 
-        if n mod divisor = 0 then false (* Divisor found, not prime *)
-        else isPrimeHelper(n, divisor + 1) (* Continue search for divisor *)
-
-fun isPrime(n) =
-    if n < 3 then
-        if n = 2 then
-            true
-        else
-            false
-    else
-        isPrimeHelper(n, 2)
-
+fun isPrime n =
+    let
+        fun hasDivisor (d, n) =
+            if d * d > n then false
+            else if n mod d = 0 then true
+            else hasDivisor (d + 1, n)
+    in
+        if n <= 1 then false
+        else if hasDivisor (2, n) then false
+        else true
+    end;
 
 (*
     Write a function select of this type: ‘a list * (‘a -> bool) -> ‘a list 
@@ -70,10 +61,16 @@ fun isPrime(n) =
     list like [7,5,3,2].
 *)
 
-fun select([], _) = []
-  | select(x::xs, filter: 'a -> bool) =
-      if filter x then x::select(xs, filter)
-      else select(xs, filter)
+fun select (lst, f) =
+    case lst of
+        [] => []
+      | x::xs => if f x then x :: select(xs, f)
+                 else select(xs, f);
+
+fun select2([], _) = []
+  | select2(x::xs, filter) =
+      if filter x then x::select2(xs, filter)
+      else select2(xs, filter) 
 
 
 (*
@@ -82,11 +79,9 @@ fun select([], _) = []
     function should return true
 *)
 
-fun logicalOr [] = true
-  | logicalOr (x::xs) =
-        if x = true then x
-        else logicalOr(xs)
-
+fun band [] = true
+  | band (x::[])= x
+  | band (x::xs) = x orelse band xs;
 
 (*
     Write a function dupList of type ‘a list -> ‘a list whose output list is the 
@@ -96,7 +91,7 @@ fun logicalOr [] = true
 *)
 
 fun dupList [] = []
-  | dupList (x::xs) = [x, x] @ dupList(xs)
+  | dupList (x::xs) = x :: x :: dupList xs;
 
 
 (*
@@ -104,11 +99,15 @@ fun dupList [] = []
     of a list of integers. Your function need not to behave well if the list is empty.
 *)
 
-fun maxPair(x, y) =
-    if x > y then x else y
+fun max [x] = x
+  | max (x :: xs) =
+      let
+        val m = max xs
+      in
+        if x > m then x else m
+      end;
 
-fun maxInt (x::[]) = x
-  | maxInt (x::xs) = maxPair(x, maxInt(xs))
+
 
 
 (*
@@ -117,13 +116,8 @@ fun maxInt (x::[]) = x
     example, convert [(1,2), (3,4), (5,6)] should evaluate to ([1,3,5], [2,4,6]).
 *)
 
-fun transposePair [] = ([], [])
-  | transposePair ((x,y)::xs) =
-      let 
-        val (lst1,lst2) = transposePair(xs)
-      in
-        (x::lst1, y::lst2)
-      end;
+fun convert xs =
+  foldr (fn ((a, b), (listA, listB)) => (a :: listA, b :: listB)) ([], []) xs;
 
 
 (*
@@ -157,3 +151,10 @@ fun makeIntBST [] = Empty
       makeBST ((fn (x, y) => x < y), lst)
 
 
+(*
+    Write a function searchBST of type
+    ''a tree → (''a * ''a → bool) → ''a → bool
+    that searches a binary search tree for a given data element. Refer to Exercise 5 for the definition of a
+    binary search tree. You should not search every node in the tree, but only those nodes that,
+    according to the definition, might contain the element you are looking for.
+*)
