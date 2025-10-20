@@ -70,8 +70,10 @@ fun isPrime(n) =
     list like [7,5,3,2].
 *)
 
-fun select(lst: 'a list, filter: 'a -> bool) =
-    lst
+fun select([], _) = []
+  | select(x::xs, filter: 'a -> bool) =
+      if filter x then x::select(xs, filter)
+      else select(xs, filter)
 
 
 (*
@@ -80,7 +82,7 @@ fun select(lst: 'a list, filter: 'a -> bool) =
     function should return true
 *)
 
-fun logicalOr [] = false
+fun logicalOr [] = true
   | logicalOr (x::xs) =
         if x = true then x
         else logicalOr(xs)
@@ -133,11 +135,22 @@ fun transposePair [] = ([], [])
     that organizes the items in the list into a binary search tree. The tree need not be balanced. You may
     assume that no item in the tree is repeated
 *)
-(*
-datatype tree = 
-    Empty
-  | Node of 'a * tree * tree
-*)
 
+datatype 'a tree = 
+    Empty
+  | Node of 'a * 'a tree * 'a tree
+
+fun insertBST (cmp, (x, Empty)) = Node(x, Empty, Empty)
+  | insertBST (cmp, (x, Node(v, l, r))) =
+    if cmp(x, v) then Node(v, insertBST (cmp, (x, l)), r)
+    else Node(v, l, insertBST (cmp, (x, r)))
+
+fun makeBST (cmp, []) = Empty
+  | makeBST (cmp, x::xs) = insertBST (cmp, (x, makeBST (cmp, xs)))
+      
+
+fun makeIntBST [] = Empty 
+  | makeIntBST lst as (_::_) =
+      makeBST ((fn (x, y) => x < y), lst)
 
 
