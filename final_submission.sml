@@ -28,7 +28,7 @@ fun cycle (list: 'a list, n: int) : 'a list =
 fun cycle2 ([], _) = []
   | cycle2 (x::xs, n) =
       if n < 1 then x::xs
-      else cycle2 (tl list@[hd list], n - 1);
+      else cycle2 (xs@[x], n - 1);
 
 
 (*  
@@ -108,8 +108,6 @@ fun max [x] = x
       end;
 
 
-
-
 (*
     Write a function convert of type (‘a * ‘b) list -> ‘a list * ‘b list, that converts 
     a list of pairs into a pair of lists, preserving the order of the elements. For 
@@ -136,7 +134,7 @@ datatype 'a tree =
 
 fun insertBST (cmp, (x, Empty)) = Node(x, Empty, Empty)
   | insertBST (cmp, (x, Node(v, l, r))) =
-    if cmp(x, v) then Node(v, insertBST (cmp, (x, l)), r)
+    if cmp(x, v) < 0 then Node(v, insertBST (cmp, (x, l)), r)
     else Node(v, l, insertBST (cmp, (x, r)))
 
 fun makeBST (cmp, []) = Empty
@@ -144,11 +142,11 @@ fun makeBST (cmp, []) = Empty
       
 
 
- (* Usage Examples *)     
+ (* Usage Example *)     
 
 fun makeIntBST [] = Empty 
-  | makeIntBST lst as (_::_) =
-      makeBST ((fn (x, y) => x < y), lst)
+  | makeIntBST (x::xs) =
+      makeBST ((fn (x, y) => x - y), x::xs)
 
 
 (*
@@ -158,3 +156,13 @@ fun makeIntBST [] = Empty
     binary search tree. You should not search every node in the tree, but only those nodes that,
     according to the definition, might contain the element you are looking for.
 *)
+
+fun searchBST (_, Empty, cmp) = false
+  | searchBST (x, Node(key, l, r), cmp) =
+      let val comp = cmp(x, key) (* Compare current node key to x *)
+      in 
+        if comp = 0 then true (* x found*)
+        else if comp < 0 then searchBST(x, l, cmp) (* Search left subtree *)
+        else searchBST(x, r, cmp) (* Search right subtree *)
+      end;
+      
