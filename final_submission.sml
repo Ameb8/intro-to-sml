@@ -21,14 +21,10 @@ fun min3 (a, b, c) =
     should return the list [3,4,5,6,1,2].
 *)
 
-fun cycle (list: 'a list, n: int) : 'a list =
-  if n = 0 then list
-  else cycle (tl list@[hd list], n - 1);
-
-fun cycle2 ([], _) = []
-  | cycle2 (x::xs, n) =
+fun cycle ([], _) = []
+  | cycle (x::xs, n) =
       if n < 1 then x::xs
-      else cycle2 (xs@[x], n - 1);
+      else cycle (xs@[x], n - 1);
 
 
 (*  
@@ -66,11 +62,6 @@ fun select (lst, f) =
         [] => []
       | x::xs => if f x then x :: select(xs, f)
                  else select(xs, f);
-
-fun select2([], _) = []
-  | select2(x::xs, filter) =
-      if filter x then x::select2(xs, filter)
-      else select2(xs, filter) 
 
 
 (*
